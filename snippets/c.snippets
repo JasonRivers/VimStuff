@@ -1,0 +1,108 @@
+snippet main
+	int main(int argc, const char *argv[])
+	{
+		${1}
+		return 0;
+	}
+snippet i
+	#include <${1:stdio}.h>${2}
+snippet d
+	#define ${1}
+snippet w
+	while (${1:1})
+	{
+		${2}
+	}
+snippet for
+	for (int ${1:i} = 0; $1 < ${2:n}; $1++)
+	{
+		${3}
+	}
+snippet min
+	#define min(x,y) (((x)<(y))?(x):(y))
+snippet max
+	#define max(x,y) (((x)>(y))?(x):(y))
+snippet gcd
+	int gcd(int x, int y)
+	{
+		while (y)
+		{
+			int h = y;
+			y = x % y;
+			x = h;
+		}
+		return x;
+	}
+	${1}
+snippet isqrt
+	int isqrt(int x)
+	{
+		if (x < 1) { return 0; }
+		int b = 0x40000000;
+		int remainder = x;
+		int root = 0;
+		while (b > 0)
+		{
+			if (remainder >= (b | root))
+			{
+				remainder -= (b | root);
+				root >>= 1;
+				root |= b;
+			}
+			else
+			{
+				root >>= 1;
+			}
+			b >>= 2;
+		}
+		return root;
+	}
+	${1}
+snippet isqrtll
+	ll isqrt(ll x)
+	{
+		if (x < 1) { return 0; }
+		ll b = 0x4000000000000000LL;
+		ll remainder = x;
+		ll root = 0;
+		while (b > 0)
+		{
+			if (remainder >= (b | root))
+			{
+				remainder -= (b | root);
+				root >>= 1;
+				root |= b;
+			}
+			else
+			{
+				root >>= 1;
+			}
+			b >>= 2;
+		}
+		return root;
+	}
+	${1}
+snippet ms
+	memset(${1:a}, ${2:0}, sizeof($1));
+	${3}
+snippet p
+	printf("${1}\n");
+	${2}
+snippet pd
+	printf("%d\n", ${1});${2}
+snippet pll
+	printf("%lld\n", ${1});${2}
+snippet pv
+	printf("${1:} = %d\n", $1);
+	${2}
+snippet re
+	return ${1}
+snippet len
+	#define len(a) (sizeof(a) / sizeof(a[0]))
+	${1}
+snippet ll
+	typedef long long ll;
+	${1}
+snippet e
+	(*env)->${1}(env, ${2});
+	${3}

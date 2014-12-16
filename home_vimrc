@@ -1,0 +1,364 @@
+" Originally ripped from ngn/vimfiles ()
+" This file should be symlinked as ~/.vimrc
+se nocp rtp+=~/.vim/bundle/vundle
+filet off
+
+cal vundle#rc()
+
+Bundle 'gmarik/vundle'
+
+Bundle 'airblade/vim-gitgutter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'vim-scripts/cscope.vim'
+Bundle 'tpope/vim-surround'
+Bundle 'rking/ag.vim'
+Bundle 'msanders/snipmate.vim'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'tpope/vim-fugitive'
+Bundle 'digitaltoad/vim-jade'
+Bundle 'moll/vim-bbye'
+
+if filereadable(expand('~/.vimrc.local'))
+  so ~/.vimrc.local
+en
+
+filet plugin indent on
+
+let mapleader = ','
+
+se et ai si list lcs=tab:»·,trail:.,extends:>,precedes:<,nbsp:% nu nuw=3 nowrap dy=lastline hls ic is isf-== ve=all uc=0
+se noeb novb t_vb= nobk nowb sc wmnu wim=list:longest sm lz ml enc=utf8 hid sh=/bin/bash shm=atI ls=2 cot+=menuone,longest set confirm
+
+nn <leader>vn :se nu!<cr>
+nn <leader>vw :se wrap!<cr>
+vn \ :<c-u>cal common#vSetSearch()<cr>:let @/ = '\C'.@/<cr>:redr!<cr>:%s/<c-r>///g<left><left>
+nn \ :let @/ = '\C\<<c-r><c-w>\>'<cr>:se hls<cr>:redr!<cr>:%s/<c-r>///g<left><left>
+
+" Colours and fonts
+if has('gui_running')
+  se gfn=APL\ 385\ Unicode
+elseif expand('$COLORTERM') ==# 'gnome-terminal'
+  se term=xterm-256color
+en
+colo ngn
+sy on
+
+no <leader>Y :cal syntax#edit()<cr>
+
+" NERDTree configuration
+let g:NERDTreeMapToggleFilters=0
+nn f :exe nerdtree#isTreeOpen()?'NERDTreeClose':'NERDTreeFind'<cr>
+
+" Snipmate configuration
+let g:snippets_dir = expand('~').'/.vim/snippets' " do not use default snippets
+
+" Jump to the last known position in a file.
+au bufreadpost * if line("'\"") > 1 && line("'\"") <= line('$') && &ft !~ '^git' | exe "norm! g`\"zv" | en
+
+ino <expr> <buffer> <bs> common#hungryBackspace()
+no <c-up> :cp<cr>
+no <c-down> :cn<cr>
+no <c-x>c :qa<cr>
+map <c-x><c-c> <c-x>c
+ino <c-b> <left>
+ino <c-f> <right>
+no <c-a> <home>
+ino <c-a> <home>
+cno <c-a> <home>
+ino <c-e> <end>
+no <c-e> <end>
+ino <c-d> <delete>
+nn <c-l> :noh<cr><c-l>
+vn <c-l> :<c-u>noh<cr><c-l>gv
+ino <c-l> <c-o>:noh<cr><c-o><c-l>
+nn <leader>+ <c-a>
+nn <leader>- <c-x>
+nn <tab> <c-w><c-w>
+nn s :wa<cr>
+
+" Oxford English Dictionary lookup
+nn gK viw:cal common#oed()<cr>
+vn gK :<c-u>cal common#oed()<cr>gv
+
+vn * :<c-u>cal common#vSetSearch()<cr>//<cr>
+vn # :<c-u>cal common#vSetSearch()<cr>??<cr>
+vn + :cal      common#columnIncrement()<cr>
+
+" Commenting
+nn <silent> gc :se opfunc=Comment<cr>g@
+vn <silent> gc :<c-u>cal Comment('')<cr>
+nm gcc gc$j
+fu Comment(t)
+  let sel = &sel
+  let &sel = 'inclusive'
+  let [l0, l1] = [line(len(a:t) ? "'[" : "'<"), line(len(a:t) ? "']" : "'>")] " first and last line
+  let &sel = sel
+  let a = getline(l0, l1)
+  let [p, q] = split(&cms, '%s', 1) " prefix and suffix
+  let [np, nq] = [len(p), len(q)]
+  let npq = np + nq
+  let ws = '^\s*$'
+  " If all lines are commented or empty, then uncomment them.  Otherwise, comment them.
+  let flag = min(map(copy(a), 'strpart(v:val, 0, np) ==# p && strpart(v:val, len(v:val) - nq) ==# q || v:val =~ ws'))
+  cal setline(l0, map(a, 'v:val =~ ws ? v:val : '.(flag ? 'strpart(v:val, np, len(v:val) - npq)' : 'p.v:val.q')))
+endf
+
+" Indent text object
+ono ai :<c-u>cal IndentTextObj(0, 0)<cr>
+ono ii :<c-u>cal IndentTextObj(0, 1)<cr>
+vn  ai :<c-u>cal IndentTextObj(1, 0)<cr>
+vn  ii :<c-u>cal IndentTextObj(1, 1)<cr>
+fu IndentTextObj(visual, inner)
+  let ws = '^\s*$'
+  let [x, y] = a:visual ? [line("'<"), line("'>")] : [line('.'), line('.')]
+  let [x0, y0] = [x, y]
+  let ind = min(map(filter(getline(x, y), 'v:val !~# ws'), 'indent(x + v:key)')) " greatest common indent, ignoring blank lines
+  let n = line('$')
+  wh x > 1 && (getline(x - 1) =~# ws || indent(x - 1) >= ind) | let x -= 1 | endw
+  wh y < n && (getline(y + 1) =~# ws || indent(y + 1) >= ind) | let y += 1 | endw
+  if !a:inner | let [x, y] = [max([1, x - 1]), min([n, y + 1])] | en
+  exe 'norm! '.x.'GV'.y.'G'
+endf
+
+" Exec
+nn <cr> :cal exec#exec(0)<cr>
+nn <leader><cr> :cal exec#exec(1)<cr>
+
+" Git
+nn <leader>D :Gdiff<cr>
+nn <leader>B :Gblame<cr>
+
+" Explain highlighting
+nn <silent> <leader>S :cal syntax#explainHighlighting()<cr>
+
+" Show factorisation of number under cursor
+nn <silent> <leader>f :echom substitute(system('factor <c-r><c-w>'), '\n', '', 'g')<cr>
+
+" Unicode
+if has('python')
+  nn<silent> ga :cal ExplainChar()<cr>
+  fu ExplainChar()
+  py <<
+import vim, unicodedata as u
+line = vim.current.line
+i = int(vim.eval('col(".")')) - 1
+if 0 <= i < len(line):
+    a = unicode(line[i:], encoding='utf8')[0]
+    m = '<' + a.encode('utf8') + '> ' if ord(a) >= 32 else ''
+    m += 'U+%04X' % ord(a)
+    try:
+        m += ' ' + u.name(a)
+    except ValueError:
+        pass
+    print(m)
+.
+  endf
+en
+
+" Templates
+au bufnewfile * cal <sid>template()
+fu s:template()
+  let f = findfile('templates/'.expand('%:e'), &rtp)
+  if f != ''
+    exe '0r '.fnameescape(f)
+    norm! Gddgg0
+    if search('\${1}', 'W')
+      norm! c4l
+      let l = line('.')
+      let c = col('.')
+      cal cursor(l, c + 1)
+      if c == len(getline('.')) | star! | el | star | en
+    en
+  en
+endf
+
+if executable('xsel')
+  nn <c-c> yy:cal system('xsel -l /dev/null -ib', @0)<cr>
+  vn <c-c> y:cal system('xsel -l /dev/null -ib', @0)<cr>
+  nn <c-v><c-v> "=system('xsel -l /dev/null -ob')<cr>p
+  ino <c-v><c-v><c-v> <c-r>=system('xsel -ob')<cr>
+en
+
+" The Silver Searcher
+nn <leader>g :Ag '<c-r>=expand('<cword>')<cr>'<cr>
+vn <leader>g y:Ag '<c-r>"'
+
+no <silent> <space> :<c-u>cal buf#cmd('bn')<cr>
+no <silent> <bs>    :<c-u>cal buf#cmd('bp')<cr>
+no <silent> X       :<c-u>cal buf#cmd('bd')<cr>
+
+" Hashbang
+inorea <silent> # <c-r>=<sid>hashbang()<cr>
+fu <sid>hashbang()
+  if !exists('b:hashbang') | retu '#' | en
+  let ch = nr2char(getchar(0))
+  retu ch==#'!' ? '#!'.b:hashbang."\n\n" : '#'.ch
+endf
+
+" Guess tabs or spaces
+au bufread * cal <sid>et()
+fu s:et()
+  if &ro || &bin | retu | en
+  let a = map(getline(1, 256), 'v:val[0]')
+  let &l:et = count(a, ' ') >= count(a, "\t")
+endf
+
+no <leader>w :%s/[ \r\t]\+$//gc<cr>
+
+no <expr> <leader>j <sid>skip(1)
+no <expr> <leader>k <sid>skip(-1)
+fu s:skip(delta)
+  let [l0, c] = [line('.'), col('.')]
+  let l = l0 + a:delta
+  let lastLine = line('$')
+  wh 1 < l && l < lastLine && substitute(getline(l), "\t", repeat(' ', &ts), '')[:c - 1] =~# '^ *$'
+    let l += a:delta
+  endw
+  retu abs(l - l0).'jk'[l < l0]
+endf
+
+au bufnewfile *.java cal <sid>java()
+fu s:java()
+  let p = '' " package
+  let a = split(expand('%:p:h'), '/')
+  let i = len(a) - 1
+  wh i > 0
+    if a[i] =~# '\v(com|org|net)'
+      let p = join(a[i :], '.')
+      break
+    en
+    let i -= 1
+  endw
+  let lines = ['final class '.expand('%:r').' {', '    ', '}']
+  if p !=# ''
+    let lines = ['package '.p.';', ''] + lines
+  en
+  cal setline(1, lines)
+  norm! Gk
+  star!
+endf
+
+nn <leader>a :cal <sid>blame()<cr>
+let s:signs = 17000 " sign id counter, arbitrarily initialised
+fu! s:blame()
+  let buf = bufnr('%')
+  if exists('b:blame')
+    for i in range(b:blame[0], b:blame[1] - 1)
+      exe 'sig unplace '.i.' buffer='.buf
+    endfor
+    unl b:blame
+  el
+    let authors = {} " maps an author to a number in the range 0..max_authors-1
+    let b:blame = [s:signs] " b:blame[0]..b:blame[1]-1  will be the range of sign ids we use
+    let lineNr = 0
+    let sha0 = '0000000000000000000000000000000000000000'
+    let sha = sha0
+    let author = ''
+    let time = 0
+    let now = localtime()
+    for s in split(system('git blame -p '.shellescape(expand('%'))), '\n')
+      if s =~# '^\x\{40} '
+        let lineNr += 1
+        let [sha, author, time] = [s[:39], '', now]
+      elseif s =~# '^author '
+        let author = s[7:]
+      elseif s =~# '^author-time '
+        let time = str2nr(s[12:])
+      elseif s =~# '^\t' && sha !=# sha0
+        if !empty(author)
+          if !has_key(authors, author) | let authors[author] = len(authors) % g:blame_max_authors | en
+          let t = now - time
+          exe 'sig define blame_'.sha.' text='.author[:1].' texthl=blame'.authors[author].(t < 86400 ? 0 : t < 604800 ? 1 : t < 2592000 ? 2 : t < 31536000 ? 3 : 4)
+        en
+        exe 'sig place '.s:signs.' line='.lineNr.' name=blame_'.sha.' buffer='.buf
+        let s:signs += 1
+      en
+    endfor
+    let b:blame += [s:signs]
+  en
+endf
+
+if v:version < 700
+  se stl=%<%f\ %y%m%r%=%5(0x%02B%)%10((%l,%c)%)%4P
+el
+  se stl=%<%f\ %y%m%r%{Stl()}%=%{StlSyn()}%5(0x%02B%)%10((%l,%c)%)%4P
+  fu Stl()
+    retu (&fenc !~# '\v^(utf-8)?$' ? ('['.&fenc.']') : '').(&bomb ? '[BOM]' : '').(&ff !=# 'unix' ? ('['.&ff.']') : '')
+  endf
+  fu StlSyn()
+    retu join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), '>')
+  endf
+en
+
+" Search for and source a file named 'vimrc' in the current directory and its ancestors
+let f = findfile('vimrc', '.;')
+if !empty(f) | exe 'so '.fnameescape(f) | en
+unl f
+
+if has('cscope')
+  se cst csqf=s-,c-,d-,i-,t-,e- csre
+  let f = findfile('cscope.out', '.;')
+  if !empty(f) | exe 'cs add '.f.' '.fnamemodify(f, ':p:h') | en
+  unl f
+en
+
+" Unicode rectangles
+vn <silent> <leader>[ :<c-u>cal Rect(1)<cr>
+vn <silent> <leader>] :<c-u>cal Rect(2)<cr>
+fu Rect(u) " u: thickness
+  if visualmode() !=# "\<c-v>" | retu | en
+  let h = split(' ╶╺╵└┕╹┖┗╴─╼┘┴┶┚┸┺╸╾━┙┵┷┛┹┻╷┌┍│├┝╿┞┡┐┬┮┤┼┾┦╀╄┑┭┯┥┽┿┩╃╇╻┎┏╽┟┢┃┠┣┒┰┲┧╁╆┨╂╊┓┱┳┪╅╈┫╉╋', '\zs')
+  let e = map(range(81), '[v:val/27%3,v:val/9%3,v:val/3%3,v:val%3]') " encode in base 3
+  let sel = &sel
+  let &sel = 'inclusive'
+  let [ls, cs] = [[line("'<"), line("'>")], [virtcol("'<"), virtcol("'>")]]
+  let &sel = sel
+  let [l0, l1, c0, c1] = [min(ls), max(ls), min(cs), max(cs)]
+  let a = map(map(getline(l0, l1), "split(v:val, '\\zs')"), "extend(v:val, repeat([' '], max([0, c1 - len(v:val)])))")
+  let u = a:u
+  let [V, H] = [[u, 0, u, 0], [0, u, 0, u]] " vertical and horizontal line
+  " b: list of changes, line-column-bitmask triples
+  if l0 < l1 && c0 < c1
+    let b = [[l0, c0, [u, 0, 0, u]], [l0, c1, [u, u, 0, 0]], [l1, c0, [0, 0, u, u]], [l1, c1, [0, u, u, 0]]]
+    let b += map(range(l0 + 1, l1 - 1), '[v:val, c0, V]') + map(range(l0 + 1, l1 - 1), '[v:val, c1, V]')
+    let b += map(range(c0 + 1, c1 - 1), '[l0, v:val, H]') + map(range(c0 + 1, c1 - 1), '[l1, v:val, H]')
+  elseif l0 < l1
+    let b = [[l0, c0, [u, 0, 0, 0]], [l1, c0, [0, 0, u, 0]]] + map(range(l0 + 1, l1 - 1), '[v:val, c0, V]')
+  elseif c0 < c1
+    let b = [[l0, c0, [0, 0, 0, u]], [l0, c1, [0, u, 0, 0]]] + map(range(c0 + 1, c1 - 1), '[l0, v:val, H]')
+  else
+    let b = []
+  en
+  for [l, c, x] in b
+    let i = index(h, a[l - l0][c - 1])
+    if i >= 0
+      let z = map(copy(e[i]), 'max([v:val, x[v:key]])')
+      let a[l - l0][c - 1] = h[27*z[0] + 9*z[1] + 3*z[2] + z[3]] " decode from base 3
+    en
+  endfor
+  cal setline(l0, map(a, "join(v:val, '')"))
+endf
+
+nn Q q
+nn<silent>q :up<cr>:q<cr>
+
+nn<silent>g= :se opfunc=Align<cr>g@
+vn<silent>g= :cal Align('')<cr>
+fu Align(type) range
+  let d = input('align at: ') " delimiter
+  let a = getline(a:firstline, a:type ==# '' ? a:lastline : line("']")) " lines
+  let p = map(copy(a), 'stridx(v:val, d)') " byte offsets of d in each line
+  let w = map(copy(a), 'strdisplaywidth(strpart(v:val, 0, p[v:key]))') " character offsets of d in each line
+  let c = max(w) " column to align at
+  cal map(a, 'p[v:key] < 0 ? v:val : strpart(v:val, 0, p[v:key]).repeat(" ", c - w[v:key]).strpart(v:val, p[v:key])')
+  cal setline(a:firstline, a)
+endf
+
+" GitGutter stuff
+
+let g:gitgutter_sign_added = '>>'
+let gitgutter_sign_removed = '<<'
+let g:gitgutter_sign_modified = '~~'
+let g:gitgutter_highlight_lines = 1 " Do Highlight lines
+let g:gitgutter_realtime = 1
+let g:git_gutter_eager = 1

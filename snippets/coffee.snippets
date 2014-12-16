@@ -1,0 +1,49 @@
+snippet main
+	if module is require.main then do ->
+		${1}
+snippet t
+	true${1}
+snippet f
+	false${1}
+snippet n
+	null${1}
+snippet re
+	return${1}
+snippet wh
+	while ${1:true}
+		${2}
+snippet c
+	constructor: ${1}
+snippet l
+	length${1}
+snippet p
+	console.info ${1}
+snippet repr
+	JSON.stringify ${1}
+snippet th
+	throw Error '${1}'
+snippet rec
+	arguments.callee ${1}
+snippet u
+	undefined${1}
+snippet ler
+	lengthError()${1}
+snippet der
+	domainError()${1}
+snippet rer
+	rankError()${1}
+snippet ner
+	nonceError()${1}
+snippet m
+	macro${1}
+snippet cn
+	macro.codeToNode ${1}
+snippet fn
+	macro.fileToNode ${1}
+snippet vn
+	macro.valToNode ${1}
+snippet nv
+	macro.nodeToVal ${1}
+snippet i
+	macro -> macro.fileToNode '${1}.coffee'
+	${2}

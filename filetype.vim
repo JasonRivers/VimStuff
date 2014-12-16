@@ -1,0 +1,14 @@
+au bufread,bufnewfile *.tex  setf tex
+au bufread,bufnewfile *.json setf javascript
+au bufread,bufnewfile *.md   setf markdown
+au bufread,bufnewfile *.jade setf jade
+au bufread,bufnewfile *.apl,*.dyalog setf apl
+au bufread,bufnewfile *.k    setf k
+au bufread,bufnewfile *.q    setf q
+au bufread,bufnewfile *.cs   setf csharp
+au bufread,bufnewfile *.xaml setf xml
+au bufread,bufnewfile *.ll   setf llvm
+au bufread,bufnewfile *.cl   setf c
+au bufread,bufnewfile *.s    setf nasm
+au bufread,bufnewfile *.asm  setf nasm
+au bufread,bufnewfile *.ppt  setf ppt

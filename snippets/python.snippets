@@ -1,0 +1,141 @@
+snippet coding
+	# -*- coding: utf-8 -*-
+
+snippet im
+	import ${1}
+snippet wh
+	while ${1:True}:
+		${2}
+snippet for
+	for ${1:i} in ${2:ensemble}:
+		${3}
+# New Class
+snippet cl
+	class ${1:ClassName}(object):
+		${2}
+# New Function
+snippet def
+	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
+		"""${3:docstring for $1}"""
+		${4:pass}
+snippet deff
+	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
+		${3}
+# New Method
+snippet defs
+	def ${1:mname}(self, ${2:arg}):
+		${3:pass}
+# New Property
+snippet property
+	def ${1:foo}():
+		doc = "${2:The $1 property.}"
+		def fget(self):
+			${3:return self._$1}
+		def fset(self, value):
+			${4:self._$1 = value}
+# Lambda
+snippet ld
+	lambda ${1:x}: ${2:x}
+snippet .
+	self.
+snippet try Try/Except
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+snippet try Try/Except/Else
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+	else:
+		${5:pass}
+snippet try Try/Except/Finally
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+	finally:
+		${5:pass}
+snippet try Try/Except/Else/Finally
+	try:
+		${1:pass}
+	except ${2:Exception}, ${3:e}:
+		${4:raise $3}
+	else:
+		${5:pass}
+	finally:
+		${6:pass}
+snippet main
+	if __name__ == '__main__':
+		${1}
+snippet _
+	__${1:init}__${2}
+snippet init
+	__init__(self${1}):
+		${2:pass}
+snippet p
+	print(${1})
+snippet pp
+	pprint(${1})
+snippet pv
+	print('${1:} = ' + repr($1))
+snippet la
+	lambda ${1}
+snippet re
+	return ${1}
+snippet yi
+	yield ${1}
+snippet t
+	True
+snippet f
+	False
+snippet n
+	None
+snippet xr
+	xrange(${1})${2}
+snippet r
+	range(${1})${2}
+snippet l
+	len(${1})${2}
+snippet rl
+	sys.stdin.readline().rstrip()
+snippet pdb
+	import pdb; pdb.set_trace()
+snippet memo
+	def memoised(f):
+		h = {}
+		def g(*args):
+			k = tuple(args)
+			if k not in h:
+				h[k] = f(*args)
+			return h[k]
+		g.__name__ = f.__name__
+		g.__doc__ = f.__doc__
+		return g
+snippet prod
+	def prod(a):
+		r = 1
+		for x in a:
+			r *= x
+		return r
+snippet exit
+	import sys; sys.exit(0)
+snippet comb
+	def C(n, k):
+		a = b = 1
+		for i in range(k):
+			a *= n - i
+			b *= i + 1
+		return a // b
+	${1}
+snippet ap
+	append(${1})
+snippet gcd
+	def gcd(x, y):
+		while y:
+			x, y = y, x % y
+		return x
+	${1}
+snippet en
+	enumerate(${1})

@@ -1,0 +1,4 @@
+#!/usr/bin/env runghc
+
+main = do
+    print $ ${1}

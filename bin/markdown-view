@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+T=`tempfile -p vimmd -s .html`
+(
+    echo '
+        <!doctype html>
+        <html>
+        <head>
+        <meta charset="utf-8">
+        <title>Markdown Output</title>
+        </head>
+        <body>
+    '
+    markdown "$1"
+    echo '
+        </body>
+        </html>
+    '
+) >"$T"
+
+(chromium-browser --incognito "$T" >/dev/null && rm -f "$T")&

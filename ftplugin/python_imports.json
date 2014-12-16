@@ -1,0 +1,18 @@
+{
+    "": ["os", "sys", "re", "random", "functools", "struct", "itertools", "json", "pickle", "zlib", "zipfile", "md5", "sha", "argparse", "shutil", "gmpy"],
+    "os.path": ["abspath", "basename", "dirname", "exists", "getatime", "getctime", "getmtime", "getsize", "isabs", "isdir", "isfile", "islink", "ismount", "join", "lexists", "normpath", "pardir", "pathsep", "realpath", "relpath", "samefile", "sep", "split", "stat", "walk"],
+    "sys": ["argv", "exit", "stdin", "stdout"],
+    "re": ["findall", "finditer", "match", "search", "sub", "subn"],
+    "random": ["choice", "randint", "shuffle"],
+    "functools": ["reduce", "partial"],
+    "struct": ["pack", "unpack", "calcsize"],
+    "pprint": ["pprint", "pformat"],
+    "itertools": ["combinations", "permutations", "product", "groupby"],
+    "glob": ["glob", "iglob"],
+    "zlib": ["adler32", "crc32", "compress", "decompress"],
+    "zipfile": ["ZipFile"],
+    "os": ["environ", "chdir", "getcwd", "getpid", "getppid", "getuid", "tmpfile", "isatty", "chroot", "chmod", "chown", "link", "listdir", "mkdir", "makedirs", "readlink", "removedirs", "rmdir", "stat", "symlink", "unlink", "execl", "execle", "execlp", "execlpe", "execv", "execve", "execvp", "execvpe", "fork", "kill", "system", "urandom"],
+    "time": ["time", "strftime", "sleep"],
+    "argparse": ["ArgumentParser"],
+    "gmpy": ["mpz", "mpq", "bincoef", "fib", "gcd", "is_power", "is_prime", "is_square", "jacobi", "kronecker", "lcm", "legendre"]
+}
