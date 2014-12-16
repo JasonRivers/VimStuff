@@ -17,7 +17,7 @@ Bundle 'kchmck/vim-coffee-script'
 Bundle 'tpope/vim-fugitive'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'moll/vim-bbye'
-Bundle 'ngn/vim-apl' ⍝ Use vim-apl from Nicks Repo
+Bundle 'ngn/vim-apl'
 
 if filereadable(expand('~/.vimrc.local'))
   so ~/.vimrc.local
@@ -28,7 +28,7 @@ filet plugin indent on
 let mapleader = ','
 
 se et ai si list lcs=tab:»·,trail:.,extends:>,precedes:<,nbsp:% nu nuw=3 nowrap dy=lastline hls ic is isf-== ve=all uc=0
-se noeb novb t_vb= nobk nowb sc wmnu wim=list:longest sm lz ml enc=utf8 hid sh=/bin/bash shm=atI ls=2 cot+=menuone,longest set confirm
+se noeb novb t_vb= nobk nowb sc wmnu wim=list:longest sm lz ml enc=utf8 hid sh=/bin/bash shm=atI ls=2 cot+=menuone,longest confirm
 
 nn <leader>vn :se nu!<cr>
 nn <leader>vw :se wrap!<cr>
