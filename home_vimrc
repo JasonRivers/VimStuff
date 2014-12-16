@@ -1,4 +1,4 @@
-" Originally ripped from ngn/vimfiles ()
+" Originally ripped from ngn/vimfiles (Thanks Nick)
 " This file should be symlinked as ~/.vimrc
 se nocp rtp+=~/.vim/bundle/vundle
 filet off
