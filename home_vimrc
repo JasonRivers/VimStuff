@@ -17,6 +17,7 @@ Bundle 'kchmck/vim-coffee-script'
 Bundle 'tpope/vim-fugitive'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'moll/vim-bbye'
+Bundle 'ngn/vim-apl' ⍝ Use vim-apl from Nicks Repo
 
 if filereadable(expand('~/.vimrc.local'))
   so ~/.vimrc.local
