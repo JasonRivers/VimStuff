@@ -1,6 +1,6 @@
 " Originally ripped from ngn/vimfiles (Thanks Nick)
 " This file should be symlinked as ~/.vimrc
-se nocp rtp+=~/.vim/bundle/vundle
+se nocp rtp+=~/.vim/bundle/vundle "https://github.com/gmarik/Vundle.vim
 filet off
 
 cal vundle#rc()
