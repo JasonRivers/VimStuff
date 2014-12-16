@@ -89,7 +89,7 @@ vn + :cal      common#columnIncrement()<cr>
 nn <silent> gc :se opfunc=Comment<cr>g@
 vn <silent> gc :<c-u>cal Comment('')<cr>
 nm gcc gc$j
-fu Comment(t)
+fu! Comment(t)
   let sel = &sel
   let &sel = 'inclusive'
   let [l0, l1] = [line(len(a:t) ? "'[" : "'<"), line(len(a:t) ? "']" : "'>")] " first and last line
@@ -109,7 +109,7 @@ ono ai :<c-u>cal IndentTextObj(0, 0)<cr>
 ono ii :<c-u>cal IndentTextObj(0, 1)<cr>
 vn  ai :<c-u>cal IndentTextObj(1, 0)<cr>
 vn  ii :<c-u>cal IndentTextObj(1, 1)<cr>
-fu IndentTextObj(visual, inner)
+fu! IndentTextObj(visual, inner)
   let ws = '^\s*$'
   let [x, y] = a:visual ? [line("'<"), line("'>")] : [line('.'), line('.')]
   let [x0, y0] = [x, y]
@@ -138,7 +138,7 @@ nn <silent> <leader>f :echom substitute(system('factor <c-r><c-w>'), '\n', '', '
 " Unicode
 if has('python')
   nn<silent> ga :cal ExplainChar()<cr>
-  fu ExplainChar()
+  fu! ExplainChar()
   py <<
 import vim, unicodedata as u
 line = vim.current.line
@@ -158,7 +158,7 @@ en
 
 " Templates
 au bufnewfile * cal <sid>template()
-fu s:template()
+fu! s:template()
   let f = findfile('templates/'.expand('%:e'), &rtp)
   if f != ''
     exe '0r '.fnameescape(f)
@@ -190,7 +190,7 @@ no <silent> X       :<c-u>cal buf#cmd('bd')<cr>
 
 " Hashbang
 inorea <silent> # <c-r>=<sid>hashbang()<cr>
-fu <sid>hashbang()
+fu! <sid>hashbang()
   if !exists('b:hashbang') | retu '#' | en
   let ch = nr2char(getchar(0))
   retu ch==#'!' ? '#!'.b:hashbang."\n\n" : '#'.ch
@@ -198,7 +198,7 @@ endf
 
 " Guess tabs or spaces
 au bufread * cal <sid>et()
-fu s:et()
+fu! s:et()
   if &ro || &bin | retu | en
   let a = map(getline(1, 256), 'v:val[0]')
   let &l:et = count(a, ' ') >= count(a, "\t")
@@ -208,7 +208,7 @@ no <leader>w :%s/[ \r\t]\+$//gc<cr>
 
 no <expr> <leader>j <sid>skip(1)
 no <expr> <leader>k <sid>skip(-1)
-fu s:skip(delta)
+fu! s:skip(delta)
   let [l0, c] = [line('.'), col('.')]
   let l = l0 + a:delta
   let lastLine = line('$')
@@ -219,7 +219,7 @@ fu s:skip(delta)
 endf
 
 au bufnewfile *.java cal <sid>java()
-fu s:java()
+fu! s:java()
   let p = '' " package
   let a = split(expand('%:p:h'), '/')
   let i = len(a) - 1
@@ -283,10 +283,10 @@ if v:version < 700
   se stl=%<%f\ %y%m%r%=%5(0x%02B%)%10((%l,%c)%)%4P
 el
   se stl=%<%f\ %y%m%r%{Stl()}%=%{StlSyn()}%5(0x%02B%)%10((%l,%c)%)%4P
-  fu Stl()
+  fu! Stl()
     retu (&fenc !~# '\v^(utf-8)?$' ? ('['.&fenc.']') : '').(&bomb ? '[BOM]' : '').(&ff !=# 'unix' ? ('['.&ff.']') : '')
   endf
-  fu StlSyn()
+  fu! StlSyn()
     retu join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), '>')
   endf
 en
@@ -306,7 +306,7 @@ en
 " Unicode rectangles
 vn <silent> <leader>[ :<c-u>cal Rect(1)<cr>
 vn <silent> <leader>] :<c-u>cal Rect(2)<cr>
-fu Rect(u) " u: thickness
+fu! Rect(u) " u: thickness
   if visualmode() !=# "\<c-v>" | retu | en
   let h = split(' ╶╺╵└┕╹┖┗╴─╼┘┴┶┚┸┺╸╾━┙┵┷┛┹┻╷┌┍│├┝╿┞┡┐┬┮┤┼┾┦╀╄┑┭┯┥┽┿┩╃╇╻┎┏╽┟┢┃┠┣┒┰┲┧╁╆┨╂╊┓┱┳┪╅╈┫╉╋', '\zs')
   let e = map(range(81), '[v:val/27%3,v:val/9%3,v:val/3%3,v:val%3]') " encode in base 3
@@ -345,7 +345,7 @@ nn<silent>q :up<cr>:q<cr>
 
 nn<silent>g= :se opfunc=Align<cr>g@
 vn<silent>g= :cal Align('')<cr>
-fu Align(type) range
+fu! Align(type) range
   let d = input('align at: ') " delimiter
   let a = getline(a:firstline, a:type ==# '' ? a:lastline : line("']")) " lines
   let p = map(copy(a), 'stridx(v:val, d)') " byte offsets of d in each line
